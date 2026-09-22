@@ -1,0 +1,103 @@
+---
+title: "mono edit — modify a note's content by ID"
+sidebarTitle: "edit"
+description: "mono edit updates an existing note. Use --append to add text to the end, or --overwrite to replace the content entirely. Key flags: --append, --overwrite, --headless."
+---
+
+`mono edit` modifies the content of an existing note in the SQLite database, identified by its integer ID. You must choose exactly one of two edit modes: `--append` to add text to the end of the existing content, or `--overwrite` to replace the content entirely with new text. After a successful edit, the terminal prints a confirmation message showing both the old and new values.
+
+<Warning>
+  `mono edit` is a **beta feature** and is not fully finished. Behaviour may change in future releases. Always verify the result with `mono view <id>` after editing.
+</Warning>
+
+## Synopsis
+
+```bash
+mono edit <NOTE_ID> <TEXT> [OPTIONS]
+```
+
+## Arguments
+
+<ParamField path="note_id" type="u32" required>
+  The integer ID of the note you want to edit. IDs can be found with `mono list`.
+</ParamField>
+
+<ParamField path="text" type="string" required>
+  The text to append to or overwrite the note's existing content with.
+</ParamField>
+
+## Flags / Options
+
+<ParamField path="--append" type="boolean">
+  Appends `TEXT` to the end of the note's current content. Short: `-a`. Conflicts with `--overwrite` — these two flags cannot be used together.
+</ParamField>
+
+<ParamField path="--overwrite" type="boolean">
+  Replaces the note's entire content with `TEXT`. Short: `-o`. Conflicts with `--append` — these two flags cannot be used together.
+</ParamField>
+
+<ParamField path="--headless" type="boolean">
+  Does not open an interactive text editor. This flag is currently unimplemented and has no effect.
+</ParamField>
+
+<ParamField path="--copy" type="boolean">
+  Copies the command output to your clipboard. Short: `-c`. This is a global flag available on all `mono` commands.
+</ParamField>
+
+## Examples
+
+Append a follow-up to an existing note:
+
+```bash
+mono edit 3 "Follow up with design team by Friday." --append
+```
+
+Completely overwrite note 5 with new content:
+
+```bash
+mono edit 5 "Revised project scope: MVP only, ship by end of quarter." --overwrite
+```
+
+Append using the short flag:
+
+```bash
+mono edit 12 "Added edge-case handling for null inputs." -a
+```
+
+Overwrite a note and copy the confirmation to clipboard:
+
+```bash
+mono edit 8 "Updated meeting notes after review." --overwrite -c
+```
+
+Check the note before and after editing:
+
+```bash
+mono view 4
+mono edit 4 "Clarification: deadline moved to March 1st." --append
+mono view 4
+```
+
+## Output
+
+The confirmation message varies depending on which flag was used:
+
+**With `--append`:**
+
+```
+Appended "Follow up with design team by Friday." to the end of "Original note content."!
+```
+
+**With `--overwrite`:**
+
+```
+Replaced "Revised project scope: MVP only, ship by end of quarter." with "Original project scope: full feature set."!
+```
+
+**With neither flag (error):**
+
+```
+Must specify either append or overwrite
+```
+
+You must always pass either `--append` or `--overwrite`. Calling `mono edit` without one of these flags returns an error and makes no changes to the database.

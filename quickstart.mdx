@@ -1,47 +1,156 @@
 ---
-title: "Quickstart"
-description: "Begin with a guide on the fastest path to a successful outcome"
+title: "Get started with Monochromium in 5 minutes"
+sidebarTitle: "Quickstart"
+description: "From install to your first note in five minutes. Learn the core mono commands: add, checkin, list, search, and view."
 ---
 
-Describe how someone begins using your product. What is the first thing they need to do? Are there any prerequisites?
-
-A quickstart should take someone from zero to using your product. They'll get a quick win and a sense of what they can accomplish.
-
-## Prerequisites
-
-Before you begin, you must have:
-
-- Requirement one (for example, Node.js 18+, a free account, an API key)
-- Requirement two (for example, a compatible device, a compatible browser, a compatible operating system)
-
-## Get started
+This guide takes you from a fresh machine to a fully working note-taking workflow in under five minutes. You'll install `mono`, capture your first notes across multiple types, search your history, and wire up the optional shell reminder system — all without leaving the terminal.
 
 <Steps>
-  <Step title="Install">
-    Describe how to install your product or sign up.
+  <Step title="Install Monochromium">
+    Install the `mono` binary from Cargo. This is the recommended install path for all platforms:
 
     ```bash
-    npm install your-package
+    cargo install monochromium
+    ```
+
+    Cargo will compile and place the `mono` binary in `~/.cargo/bin`. Make sure that directory is on your `PATH` (it is by default if you installed Rust via `rustup`).
+  </Step>
+
+  <Step title="Verify the install">
+    Confirm the binary is available and check your installed version:
+
+    ```bash
+    mono --version
+    ```
+
+    Expected output:
+
+    ```
+    mono 0.3.0
     ```
   </Step>
-  <Step title="Configure">
-    Describe any setup or configuration needed before first use.
+
+  <Step title="Add your first note">
+    Create a plain note with `mono add`. The note is saved immediately to your local SQLite database:
 
     ```bash
-    your-cli init
+    mono add "My first note"
+    ```
+
+    Expected output:
+
+    ```
+    My first note • ID: 1 • Jan 01, 2025 at 9:00 AM
+     My first note
+    ```
+
+    The first line is the note header (title, ID, and timestamp). The indented second line is the note content.
+  </Step>
+
+  <Step title="Add a todo">
+    Use the `--type` flag to categorize a note as a `todo`. Todos are tracked separately and can be listed with `mono todos`:
+
+    ```bash
+    mono add "Ship the feature" --type todo
+    ```
+
+    Expected output:
+
+    ```
+    Ship the feature • ID: 2 • Jan 01, 2025 at 9:01 AM
+     Ship the feature
     ```
   </Step>
-  <Step title="Run it">
-    Show the first thing a user does to see it working.
+
+  <Step title="Log a check-in">
+    The `mono checkin` command is a shorthand for creating a `check-in` type note — ideal for daily mood logs or stand-up notes. No `--type` flag needed:
 
     ```bash
-    your-cli start
+    mono checkin "Feeling productive today"
     ```
+
+    Expected output:
+
+    ```
+    Feeling productive today • ID: 3 • Jan 01, 2025 at 9:02 AM
+     Feeling productive today
+    ```
+  </Step>
+
+  <Step title="List today's notes">
+    Review everything you've captured today with the `--today` flag:
+
+    ```bash
+    mono list --today
+    ```
+
+    Expected output:
+
+    ```
+    My first note • ID: 1 • Jan 01, 2025 at 9:00 AM
+    Ship the feature • ID: 2 • Jan 01, 2025 at 9:01 AM
+    Feeling productive today • ID: 3 • Jan 01, 2025 at 9:02 AM
+    ```
+
+    You can also filter by type (`--type todo`), cap the results (`--limit 10`), or include note content inline (`--view`).
+  </Step>
+
+  <Step title="Search your notes">
+    Full-text search across all note content with `mono search`:
+
+    ```bash
+    mono search "feature"
+    ```
+
+    Expected output:
+
+    ```
+    Ship the feature • ID: 2 • Jan 01, 2025 at 9:01 AM
+    ```
+
+    Narrow results further with `--type`, `--limit`, or `--date` flags.
+  </Step>
+
+  <Step title="View a note's full content">
+    Retrieve the full content of any note by its ID. The output is also automatically copied to your clipboard:
+
+    ```bash
+    mono view 1
+    ```
+
+    Expected output:
+
+    ```
+    My first note • ID: 1 • Jan 01, 2025 at 9:00 AM
+     My first note
+    ```
+  </Step>
+
+  <Step title="Enable shell reminders">
+    Opt into the reminder system by running `mono init`. This appends a small hook to your `.zshrc` that calls `mono reminder` each time you open a new shell, surfacing a note from your history:
+
+    ```bash
+    mono init
+    ```
+
+    Open a new terminal session after running this command for the reminder hook to take effect.
   </Step>
 </Steps>
 
-<Tip>
-  Give people a way to get help. This could be a link to a support page, a chat with a customer support agent, or a forum for your product.
+## What's next?
 
-  Example: Need help? Reach out to us at [support@yourcompany.com](mailto:support@yourcompany.com).
-</Tip>
+<CardGroup cols={2}>
+  <Card title="Add command" icon="plus" href="/commands/add">
+    Explore all the flags for `mono add`: set custom timestamps, use clipboard content as a note body, and more.
+  </Card>
+  <Card title="List & filter" icon="list" href="/commands/list">
+    Learn how to slice your note history with `mono list` using type filters, date ranges, and the `--view` flag.
+  </Card>
+  <Card title="Configuration" icon="gear" href="/configuration">
+    Understand the TOML config file that Monochromium creates at startup and how to customize your setup.
+  </Card>
+  <Card title="Reminders" icon="bell" href="/reminders">
+    Go deeper on the shell reminder system — how `mono init` works and how reminders are selected.
+  </Card>
+</CardGroup>

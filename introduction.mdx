@@ -1,0 +1,63 @@
+---
+title: "Monochromium: terminal note-taking built for developers"
+sidebarTitle: "Introduction"
+description: "Learn what Monochromium is, how it stores notes locally in SQLite, and why it belongs in every developer's terminal workflow."
+---
+
+Monochromium is a fast, local-first CLI note-taking app built in Rust for developers who live in the terminal. Capture ideas, track todos, log mental health check-ins, and search your entire note history — all without leaving the command line, opening a browser, or touching a mouse. No accounts, no sync, no cloud. Just you, your notes, and a single tiny binary named `mono`.
+
+## What is Monochromium?
+
+Most note-taking tools are built for everyone, which means they're built for no one who actually writes code. Monochromium is different: it's a single Rust binary that stores everything in a local SQLite database on your machine. There's no server to talk to, no API key to manage, and no internet connection required — ever.
+
+Notes are persisted in SQLite at your OS's default application data directory and are queryable instantly. Configuration lives in a TOML file alongside the database. The binary itself is aggressively optimized for size (LTO, `opt-level = "z"`, stripped symbols), so it stays out of your way and loads instantly.
+
+Monochromium is the tool for developers who want frictionless, durable note capture directly from the terminal workflow they're already in.
+
+## Key features
+
+<CardGroup cols={2}>
+  <Card title="Four focused note types" icon="layer-group">
+    Every note has a purpose: `idea`, `todo`, `check-in`, or `other`. Filter and list by type to surface exactly what you need.
+  </Card>
+  <Card title="Fully local SQLite storage" icon="database">
+    All notes are stored in a SQLite database on your local machine at the OS default data directory. No cloud, no sync, no network required.
+  </Card>
+  <Card title="Shell reminder system" icon="bell">
+    Opt into terminal reminders via `mono init`, which injects a reminder hook into your `.zshrc` so you're nudged to review notes when you open a new shell.
+  </Card>
+  <Card title="Clipboard integration" icon="clipboard">
+    Pass the global `--copy` flag to copy any command's output to your clipboard, or use `--paste` on `add` / `checkin` to create a note from clipboard content.
+  </Card>
+  <Card title="Full-text search" icon="magnifying-glass">
+    `mono search` lets you query across all note content instantly, with optional filters for note type, result limit, and date.
+  </Card>
+  <Card title="Blazing-fast tiny binary" icon="bolt">
+    Built in Rust with release-profile size optimizations: LTO enabled, single codegen unit, stripped symbols. The `mono` binary stays small and starts instantly.
+  </Card>
+</CardGroup>
+
+## Note types
+
+Monochromium organizes every note into one of four types, keeping your captures intentional and your lists scannable.
+
+| Type | CLI value | Description |
+|---|---|---|
+| **Idea** | `idea` | A fleeting thought, insight, or concept worth remembering. The default catch-all for creative captures. |
+| **Todo** | `todo` | An actionable task you need to complete. Use `mono todos` to see all pending todos in one focused list. |
+| **Check-in** | `check-in` | A mental health or daily mood log. The dedicated `mono checkin` command makes these fast to record without specifying a type manually. |
+| **Other** | `other` | Anything that doesn't fit neatly into the above three — general notes, references, snippets, and more. This is the default type when no `--type` flag is provided. |
+
+## How it works
+
+When you run any `mono` command for the first time, Monochromium:
+
+1. **Creates the database** — a SQLite file placed in your OS's default application data directory (e.g. `~/Library/Application Support/monochromium` on macOS, `~/.local/share/monochromium` on Linux).
+2. **Creates a config file** — a TOML configuration file is written alongside the database the first time `mono` runs.
+3. **Accepts your command** — notes are written to or read from SQLite immediately, with no background daemon or server process.
+
+For the optional shell reminder system, running `mono init` appends a small hook to your `.zshrc`. Each time you open a new shell, it calls `mono reminder`, which surfaces a note from your history to keep your captures top of mind.
+
+<Tip>
+  Ready to write your first note? Head to the [Quickstart](/quickstart) to go from install to productive in under five minutes.
+</Tip>

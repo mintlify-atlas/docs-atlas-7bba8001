@@ -1,0 +1,80 @@
+---
+title: "mono search — full-text search across all notes"
+sidebarTitle: "search"
+description: "mono search queries note titles and content for a text string. Filter results by type or date. Key flags: --limit, --type, --date."
+---
+
+`mono search` performs a full-text search across both the title and content fields of every note in your local database. Supply a query string and get back a ranked list of matching notes with their titles and IDs. Narrow results further by note type or (when implemented) by date. It's the fastest way to find a specific note when you remember what you wrote but not when.
+
+## Synopsis
+
+```bash
+mono search <TEXT> [--limit <N>] [--type <TYPE>] [--date <YYYY-MM-DD>] [--copy]
+```
+
+## Arguments
+
+<ParamField path="TEXT" type="string" required>
+  The search query to match against note titles and content. Required — `mono search` will error if no query is supplied. Wrap multi-word queries in quotes.
+</ParamField>
+
+## Flags / Options
+
+<ParamField path="--limit, -l" type="u16">
+  Maximum number of results to return. Defaults to `10`. Accepts any positive integer up to 65535.
+</ParamField>
+
+<ParamField path="--type, -t" type="idea | todo | check-in | other">
+  Restrict search results to a specific note category. When omitted, all note types are searched. Valid values are `idea`, `todo`, `check-in`, and `other`.
+</ParamField>
+
+<ParamField path="--date" type="YYYY-MM-DD">
+  Filter results to notes from a specific date. Accepts ISO 8601 date format (`2025-01-15`).
+
+  <Warning>This flag is not yet implemented. Supplying `--date` currently has no effect on the results returned.</Warning>
+</ParamField>
+
+<ParamField path="--copy, -c" type="boolean">
+  Global flag. Copy the full search output to the clipboard after printing.
+</ParamField>
+
+## Examples
+
+```bash
+# Search all notes for a keyword
+mono search "caching"
+
+# Search with a multi-word phrase
+mono search "onboarding flow"
+
+# Search and return up to 25 results
+mono search "API" --limit 25
+
+# Search only within todo notes
+mono search "retro" --type todo
+
+# Search only within idea notes
+mono search "bitfield" --type idea
+
+# Search and copy results to clipboard
+mono search "parser fix" --copy
+
+# Combine type filter and custom result limit
+mono search "sprint" --type todo --limit 5
+```
+
+## Output
+
+Each matching note is printed on its own line, showing the title and ID:
+
+```
+Rewrite the onboarding flow • ID: 42
+What if we stored tags as • ID: 40
+Fix the flaky integration test • ID: 35
+```
+
+The format per line is: `TITLE • ID: N`
+
+Results are returned in the order they come back from the database. Use `mono view <ID>` to open the full content of any result by its ID.
+
+If no notes match the query, the output is empty.

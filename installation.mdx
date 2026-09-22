@@ -1,0 +1,70 @@
+---
+title: "Install Monochromium on macOS and Linux"
+sidebarTitle: "Installation"
+description: "Install the mono CLI via Cargo (recommended), or build from source. Verify your install and get the binary ready to use."
+---
+
+Monochromium ships as a single Rust binary named `mono`. The recommended path for all platforms is a one-line install via Cargo. You can also clone the repository and build from source if you prefer to track the latest commits or contribute to the project. Either way, a working Rust toolchain is the only prerequisite.
+
+## Prerequisites
+
+Monochromium is built in Rust, so you'll need the Rust toolchain installed before proceeding with any of the methods below.
+
+Install Rust via `rustup` — the official Rust installer:
+
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+Visit [rustup.rs](https://rustup.rs) for full platform instructions. Once installed, confirm `cargo` is available:
+
+```bash
+cargo --version
+```
+
+## Install from Cargo (recommended)
+
+The simplest way to install Monochromium. Cargo downloads the crate from [crates.io](https://crates.io/crates/monochromium), compiles it with release optimizations, and places the `mono` binary in `~/.cargo/bin` — which is already on your `PATH` if you installed Rust via `rustup`.
+
+```bash
+cargo install monochromium
+```
+
+That's it. No additional configuration steps are needed after the install completes.
+
+## Install from source
+
+If you want to build directly from the repository — for example, to run unreleased changes or to contribute a patch — clone the repo and use `cargo install --path .`.
+
+<Steps>
+  <Step title="Clone the repository">
+    ```bash
+    git clone https://github.com/Papaya-Voldemort/Monochromium
+    ```
+  </Step>
+  <Step title="Enter the project directory">
+    ```bash
+    cd Monochromium
+    ```
+  </Step>
+  <Step title="Build and install the binary">
+    ```bash
+    cargo install --path .
+    ```
+    Cargo compiles the project and installs the resulting `mono` binary into `~/.cargo/bin`.
+  </Step>
+</Steps>
+
+## Verify the installation
+
+Once installed, confirm the binary is on your `PATH` and working:
+
+```bash
+mono --version
+```
+
+You should see the current version number printed to your terminal (e.g. `mono 0.3.0`). If the command isn't found, ensure `~/.cargo/bin` is included in your `PATH`.
+
+<Note>
+  Pre-built macOS binaries are planned for a future release but are not yet available. Cargo install (`cargo install monochromium`) is the recommended installation path for all platforms today.
+</Note>

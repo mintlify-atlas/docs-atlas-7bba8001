@@ -1,0 +1,92 @@
+---
+title: "Contributing to Monochromium"
+sidebarTitle: "Contributing"
+description: "Learn how to build Monochromium from source, run the test suite, and submit pull requests. All contributions are welcome."
+---
+
+Monochromium is a one-person passion project, and outside contributions make it better for everyone. Whether you've spotted a bug, have a feature idea, or want to improve the docs — PRs and issues of all sizes are genuinely welcome. Jump in and don't be shy.
+
+## Prerequisites
+
+You need the **Rust stable toolchain**. The easiest way to install it is via [rustup](https://rustup.rs):
+
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+No other system dependencies are required. The SQLite library is bundled directly into the binary via the `rusqlite` `bundled` feature, so you do not need SQLite installed separately.
+
+## Build from source
+
+<Steps>
+  <Step title="Clone the repository">
+    ```bash
+    git clone https://github.com/Papaya-Voldemort/Monochromium
+    ```
+  </Step>
+
+  <Step title="Enter the project directory">
+    ```bash
+    cd Monochromium
+    ```
+  </Step>
+
+  <Step title="Build a debug binary">
+    ```bash
+    cargo build
+    ```
+    The debug binary lands at `./target/debug/mono`.
+  </Step>
+
+  <Step title="Run the app locally without installing">
+    ```bash
+    cargo run -- add "test note"
+    ```
+    Everything after `--` is forwarded to `mono` as if you had typed `mono add "test note"`.
+  </Step>
+
+  <Step title="Build a release binary (optimised)">
+    ```bash
+    cargo build --release
+    ```
+    The release profile applies `opt-level = "z"`, LTO, single codegen unit, and symbol stripping to keep the binary as small as possible. The finished binary is at `./target/release/mono`.
+  </Step>
+</Steps>
+
+## Project structure
+
+```
+src/
+├── main.rs          # CLI entry point; parses top-level arguments and dispatches to commands
+├── commands/        # One file per subcommand: add, checkin, list, todos, search,
+│                    #   view, edit, delete, export, init, reminder
+├── database/        # All SQLite operations — add, read, edit, delete, search, schema
+├── config/          # TOML config loading and zshrc setup (for mono init / reminders)
+├── types/           # Clap CLI struct, NoteTypes enum, and the Note struct
+└── utils/           # Clipboard helpers, string utilities, title generation, pretty printing
+```
+
+Each `commands/` file is intentionally thin: it handles user-facing logic (prompts, output formatting) and delegates all persistence to the `database/` layer.
+
+## Running tests
+
+```bash
+cargo test
+```
+
+Tests use an **in-memory SQLite database** via `Database::new_in_memory()` so they run fast, leave no files on disk, and are fully isolated from one another. There is no external test database to set up or tear down.
+
+## Submitting changes
+
+- **Bug fixes and small features** — open a pull request directly. Link the relevant issue if one exists.
+- **Larger changes or new commands** — open an issue first to discuss the approach. This avoids wasted effort if the direction doesn't fit the project's goals.
+- **Review time** — the project has a single maintainer, so PR reviews may take several days. Please be patient.
+- **Code authorship** — Monochromium intentionally contains no AI-written code. Please ensure any contribution you submit is your own work.
+
+## License
+
+Monochromium is released under the [MIT License](https://github.com/Papaya-Voldemort/Monochromium/blob/master/LICENSE). By submitting a pull request you agree that your contribution will be distributed under the same terms.
+
+<Note>
+  The project targets a binary size under 2.5 MB. The release profile already applies aggressive size optimisations (`opt-level = "z"`, LTO, stripping). Please avoid adding heavy dependencies — prefer extending existing utilities or reaching for lightweight alternatives.
+</Note>

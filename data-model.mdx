@@ -1,0 +1,118 @@
+---
+title: "Monochromium data model and SQLite storage"
+sidebarTitle: "Data Model"
+description: "Monochromium stores all notes in a local SQLite database. Learn the notes table schema, note types enum, and where the database file lives on each OS."
+---
+
+All of your notes live entirely on your machine — Monochromium never touches a server. Every note is stored in a single SQLite file, managed by the [`rusqlite`](https://crates.io/crates/rusqlite) crate with a **bundled SQLite build**, meaning no external SQLite installation is required. The database is created automatically on first run and updated in place from that point on.
+
+## Database location
+
+Monochromium resolves the database path using `ProjectDirs::from("com", "monochromium", "monochromium")` from the [`directories`](https://crates.io/crates/directories) crate, which maps to the OS-appropriate data directory. The file is always named `monochromium.db`.
+
+| OS      | Path                                                                                      |
+| ------- | ----------------------------------------------------------------------------------------- |
+| macOS   | `~/Library/Application Support/com.monochromium.monochromium/monochromium.db`            |
+| Linux   | `~/.local/share/monochromium/monochromium.db`                                             |
+| Windows | `C:\Users\<User>\AppData\Roaming\monochromium\monochromium\data\monochromium.db`          |
+
+The parent directory is created automatically (`fs::create_dir_all`) if it does not already exist.
+
+## Schema
+
+The database contains a single table, `notes`, created with the following statement:
+
+```sql
+CREATE TABLE IF NOT EXISTS notes
+(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    type TEXT DEFAULT 'other' CHECK (TYPE IN ('todo', 'check in', 'idea', 'other')),
+    date TEXT DEFAULT CURRENT_TIMESTAMP,
+    content TEXT
+);
+```
+
+<ResponseField name="id" type="INTEGER" required>
+  Primary key. Auto-incremented by SQLite on every insert — you never set this manually.
+</ResponseField>
+
+<ResponseField name="title" type="TEXT" required>
+  A short display label for the note. Monochromium auto-generates this value from approximately the first 50 characters of the note's content, so you never have to supply it yourself.
+</ResponseField>
+
+<ResponseField name="type" type="TEXT">
+  The category of the note. Must be one of `todo`, `check in`, `idea`, or `other`, enforced at the database level by a `CHECK` constraint. Defaults to `other` when no type is specified.
+</ResponseField>
+
+<ResponseField name="date" type="TEXT">
+  The creation timestamp stored as an ISO 8601 string (e.g. `2025-01-30 14:22:05`). Defaults to SQLite's `CURRENT_TIMESTAMP` at insert time. The application layer parses this back into a `chrono::NaiveDateTime`.
+</ResponseField>
+
+<ResponseField name="content" type="TEXT">
+  The full body of the note. No length limit is enforced at the schema level.
+</ResponseField>
+
+## Note types
+
+The `NoteTypes` enum in `src/types/notes.rs` maps Clap CLI variants to the string values stored in the database:
+
+```rust
+#[derive(ValueEnum, Clone, Debug)]
+pub enum NoteTypes {
+    Idea,
+    CheckIn,
+    Todo,
+    Other,
+}
+
+impl NoteTypes {
+    pub const fn as_str(&self) -> &'static str {
+        match self {
+            Self::Idea    => "idea",
+            Self::CheckIn => "check in",
+            Self::Todo    => "todo",
+            Self::Other   => "other",
+        }
+    }
+}
+```
+
+| Enum variant | Stored string |
+| ------------ | ------------- |
+| `Idea`       | `"idea"`      |
+| `CheckIn`    | `"check in"`  |
+| `Todo`       | `"todo"`      |
+| `Other`      | `"other"`     |
+
+The string representation is what gets written to the `type` column and what the `CHECK` constraint validates against.
+
+## Note struct
+
+When a row is fetched from the database it is deserialised into the `Note` struct:
+
+```rust
+#[derive(Debug, PartialEq)]
+pub struct Note {
+    pub id: u32,
+    pub title: String,
+    pub _note_type: String,
+    pub date: NaiveDateTime,
+    pub content: String,
+}
+```
+
+The `date` field is parsed from the ISO 8601 text stored in SQLite back into a `chrono::NaiveDateTime` by the `parse_note` utility helper before being handed to the rest of the application.
+
+## Direct database access
+
+Because the notes live in a plain SQLite file you can open it with any SQLite-compatible client — the [sqlite3 CLI](https://sqlite.org/cli.html), [TablePlus](https://tableplus.com/), [DBeaver](https://dbeaver.io/), or anything else — for ad-hoc queries, exports, or backups.
+
+```bash
+sqlite3 ~/Library/Application\ Support/com.monochromium.monochromium/monochromium.db \
+  "SELECT id, title, type, date FROM notes ORDER BY date DESC LIMIT 10;"
+```
+
+<Tip>
+  Run `mono export` to dump all notes to stdout in one shot — no SQLite client needed.
+</Tip>

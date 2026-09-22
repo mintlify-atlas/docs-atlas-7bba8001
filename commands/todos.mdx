@@ -1,0 +1,91 @@
+---
+title: "mono todos — list all your todo notes"
+sidebarTitle: "todos"
+description: "mono todos is a shortcut to list notes of type todo. Supports the same time and limit filters as mono list. Key flags: --limit, --today, --since, --view."
+---
+
+`mono todos` is a dedicated shortcut for listing notes of type `todo`. It behaves identically to running `mono list --type todo` but saves you the flag and is easier to reach from muscle memory. Use it for a quick task triage, a morning review, or a sprint wrap-up — with optional date filters and content expansion.
+
+## Synopsis
+
+```bash
+mono todos [--limit <N>] [--today] [--since <YYYY-MM-DD>] [--view] [--copy]
+```
+
+## Arguments
+
+`mono todos` takes no positional arguments. All filtering is done through flags.
+
+## Flags / Options
+
+<ParamField path="--limit, -l" type="u16">
+  Maximum number of todos to return. Defaults to `10`. Accepts any positive integer up to 65535.
+</ParamField>
+
+<ParamField path="--today" type="boolean">
+  Only show todo notes created today. Handy for a focused view of what you captured during the current workday.
+</ParamField>
+
+<ParamField path="--since, -s" type="YYYY-MM-DD">
+  Show all todo notes created on or after the given date. Accepts ISO 8601 date format (`2025-01-13`). Useful for reviewing action items from a specific period.
+</ParamField>
+
+<ParamField path="--view, -v" type="boolean">
+  Expand the output to include the full content of each todo beneath its title line. Without this flag only the title and ID are shown.
+</ParamField>
+
+<ParamField path="--copy, -c" type="boolean">
+  Global flag. Copy the full formatted output to the clipboard after printing.
+</ParamField>
+
+## Examples
+
+```bash
+# Show the 10 most recent todos (default)
+mono todos
+
+# Show the 25 most recent todos
+mono todos --limit 25
+
+# Show only todos created today
+mono todos --today
+
+# Show todos created this week, expanded with full content
+mono todos --since 2025-01-13 --view
+
+# Show the 5 most recent todos with content
+mono todos --limit 5 --view
+
+# Review this month's todos and copy to clipboard
+mono todos --since 2025-01-01 --copy
+```
+
+## Output
+
+**Without `--view`** (default): one line per todo showing the title and ID.
+
+```
+Email Alex about the Q3 retro • ID: 41
+Ship the beta by end of • ID: 39
+Fix the flaky integration test • ID: 35
+```
+
+**With `--view`**: each todo is expanded with its full content, timestamp, and ID.
+
+```
+Email Alex about the Q3 retro • ID: 41 • Jan 15, 2025 at 8:45 AM
+ Email Alex about the Q3 retro before EOD Friday
+
+Ship the beta by end of • ID: 39 • Jan 14, 2025 at 4:00 PM
+ Ship the beta by end of sprint — coordinate with design for final sign-off
+```
+
+Each entry follows the format: `TITLE • ID: N • Month DD, YYYY at H:MM AM/PM` with the content indented on the following line.
+
+If no todos match the applied filters, the output is empty.
+
+---
+
+<Note>
+`mono todos` is exactly equivalent to `mono list --type todo`. The two commands share the same database query and output formatting — `todos` is simply a convenience alias that removes the need to type the type flag.
+</Note>

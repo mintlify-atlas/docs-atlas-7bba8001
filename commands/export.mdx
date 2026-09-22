@@ -1,0 +1,81 @@
+---
+title: "mono export — dump all notes to terminal output"
+sidebarTitle: "export"
+description: "mono export prints every note in your database to stdout in a human-readable format. Pipe to a file or use --copy to put it on the clipboard."
+---
+
+`mono export` reads every note stored in your local SQLite database and prints them all to stdout in a consistent, human-readable format. There is no limit on the number of notes returned — the full database is always dumped. Because output goes to stdout, you can redirect it to a file for a plain-text backup, pipe it into other tools such as `grep` or `wc`, or use the global `--copy` flag to put the entire export on your clipboard.
+
+## Synopsis
+
+```bash
+mono export [OPTIONS]
+```
+
+## Flags / Options
+
+<ParamField path="--copy" type="boolean">
+  Copies the full export output to your clipboard in addition to printing it. Short: `-c`. This is a global flag available on all `mono` commands.
+</ParamField>
+
+## Examples
+
+Print all notes to the terminal:
+
+```bash
+mono export
+```
+
+Copy the entire export to your clipboard:
+
+```bash
+mono export -c
+```
+
+Save all notes to a plain-text backup file:
+
+```bash
+mono export > notes-backup.txt
+```
+
+Append to an existing backup file:
+
+```bash
+mono export >> notes-archive.txt
+```
+
+Search for notes containing a keyword:
+
+```bash
+mono export | grep "todo"
+```
+
+Count how many notes are in the database:
+
+```bash
+mono export | grep -c "• ID:"
+```
+
+## Output
+
+Each note is printed as a two-line block. Notes are separated by a blank line:
+
+```
+Meeting Notes • ID: 1 • Jan 05, 2025 at 2:30 PM
+ Discussed Q1 roadmap. Action items: update spec doc, schedule follow-up for Jan 12.
+
+Grocery List • ID: 2 • Jan 06, 2025 at 9:15 AM
+ Eggs, milk, sourdough, coffee beans.
+
+Release Checklist • ID: 3 • Jan 07, 2025 at 4:00 PM
+ 1. Run full test suite. 2. Tag release. 3. Push to crates.io.
+```
+
+The format for each note is:
+
+```
+TITLE • ID: N • Mon DD, YYYY at H:MM AM/PM
+ CONTENT
+```
+
+Notes are output in database insertion order. If the database is empty, `mono export` produces no output and exits with a zero status code.

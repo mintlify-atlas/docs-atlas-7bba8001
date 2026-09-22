@@ -1,0 +1,72 @@
+---
+title: "mono view — display a note's full content by ID"
+sidebarTitle: "view"
+description: "mono view renders the full content of any note by its ID, formatted for the terminal. Output is automatically copied to clipboard. Key flag: --no-format."
+---
+
+`mono view` fetches a single note from the local SQLite database by its integer ID and prints its title, ID, timestamp, and full body text to the terminal. It is the fastest way to recall the exact content of any note without scrolling through a full listing. Output is **always** copied to your clipboard automatically — no extra flag required.
+
+## Synopsis
+
+```bash
+mono view <NOTE_ID> [OPTIONS]
+```
+
+## Arguments
+
+<ParamField path="note_id" type="u32" required>
+  The integer ID of the note you want to display. IDs are assigned sequentially when notes are created and can be found with `mono list`.
+</ParamField>
+
+## Flags / Options
+
+<ParamField path="--no-format" type="boolean">
+  Outputs the note's content with no Markdown formatting applied. Short: `-n`.
+
+  > **Note:** This flag is currently unimplemented. Passing it has no effect on output.
+</ParamField>
+
+## Examples
+
+View note with ID 1:
+
+```bash
+mono view 1
+```
+
+View note with ID 42:
+
+```bash
+mono view 42
+```
+
+View a note and immediately pipe the output into `less` for scrollable reading (clipboard copy still occurs):
+
+```bash
+mono view 15 | less
+```
+
+Look up a note ID first, then view it:
+
+```bash
+mono list
+mono view 7
+```
+
+## Output
+
+Each call to `mono view` prints a single formatted note block to stdout:
+
+```
+Meeting Notes • ID: 7 • Jan 05, 2025 at 2:30 PM
+ Discussed Q1 roadmap. Action items: update spec doc, schedule follow-up for Jan 12.
+```
+
+The line format is:
+
+```
+TITLE • ID: N • Mon DD, YYYY at H:MM AM/PM
+ CONTENT
+```
+
+The note's full body text appears on the second line, indented by one space. In addition to printing to the terminal, the exact same string is silently placed on your clipboard so you can paste it anywhere without a separate copy step.

@@ -1,0 +1,80 @@
+---
+title: "mono checkin — log a wellbeing check-in from your terminal"
+sidebarTitle: "checkin"
+description: "mono checkin creates a check-in type note for mindfulness and productivity tracking. Key flags: --time, --date, --paste, --copy."
+---
+
+`mono checkin` creates a note with the type permanently set to `check-in`. It is purpose-built for logging regular wellbeing or productivity snapshots — how you're feeling, what you're focused on, or anything you want to track across time. Every check-in is auto-titled using the date and time it was logged (e.g. `Check-In: Jan 15, 9:30 AM`), so your entries stay organised without any manual naming.
+
+Monochromium's shell reminder system (configured via `mono init`) tracks the interval between check-ins and will nudge you when you're overdue — making `mono checkin` the hook that keeps that feedback loop alive.
+
+## Synopsis
+
+```bash
+mono checkin [TEXT] [--time <HH:MM>] [--date <YYYY-MM-DD>] [--paste] [--copy]
+```
+
+## Arguments
+
+<ParamField path="TEXT" type="string">
+  The body of the check-in note. Optional — if omitted and `--paste` is not set, the command returns a prompt message asking you to supply content. Passed as a bare positional argument (no flag needed).
+</ParamField>
+
+## Flags / Options
+
+<ParamField path="--time" type="HH:MM | HH:MM:SS">
+  Override the time component of the check-in's timestamp. Accepts 24-hour format (`09:00`) or with seconds (`09:00:00`). Defaults to the current local time when omitted.
+</ParamField>
+
+<ParamField path="--date" type="YYYY-MM-DD">
+  Override the date component of the check-in's timestamp. Useful for logging a check-in you forgot to record at the time. Defaults to the current local date when omitted.
+</ParamField>
+
+<ParamField path="--paste, -p" type="boolean">
+  Read the check-in body from the system clipboard instead of from the `TEXT` argument. Useful when you've drafted your thoughts in another app and want to pipe them in quickly.
+</ParamField>
+
+<ParamField path="--copy, -c" type="boolean">
+  Global flag. After the check-in is saved, copy the confirmation output to the clipboard.
+</ParamField>
+
+## Examples
+
+```bash
+# Log a quick check-in right now
+mono checkin "Feeling focused. Working on the search indexer."
+
+# Log a check-in you forgot to record this morning
+mono checkin "Slow start, lots of interruptions" --time 08:30
+
+# Backdate a check-in to yesterday with a specific time
+mono checkin "Good deep work session in the afternoon" --date 2025-01-14 --time 15:00
+
+# Paste a longer check-in from clipboard
+mono checkin --paste
+
+# Log a check-in and copy the output to clipboard
+mono checkin "End of day wrap-up: shipped the parser fix" --copy
+```
+
+## Output
+
+On success, `mono checkin` prints a short confirmation message:
+
+```
+check in added successfully!
+```
+
+The note itself is stored in the database with an auto-generated title derived from its timestamp, for example:
+
+```
+Check-In: Jan 15, 9:30 AM
+```
+
+You can view check-in entries later using `mono list --type check-in` or `mono search`.
+
+If no text is provided and `--paste` is not set, the command returns:
+
+```
+Please provide a message when making your note!
+```

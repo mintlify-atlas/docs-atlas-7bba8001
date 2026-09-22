@@ -1,0 +1,84 @@
+---
+title: "mono delete — permanently remove a note by ID"
+sidebarTitle: "delete"
+description: "mono delete removes a note from the SQLite database by ID. Requires --approve flag to confirm deletion and avoid accidental data loss."
+---
+
+`mono delete` permanently removes a note from your local SQLite database by its integer ID. To prevent accidental data loss, the command is a two-step process: running it without `--approve` shows a confirmation prompt; you must re-run the command with `--approve` (or `-a`) to actually carry out the deletion.
+
+<Warning>
+  Deletion is **permanent**. Monochromium stores notes in a local SQLite file with no recycle bin or undo history. Once a note is deleted it cannot be recovered. Always double-check the note's content with `mono view <id>` before deleting.
+</Warning>
+
+## Synopsis
+
+```bash
+mono delete <NOTE_ID> [OPTIONS]
+```
+
+## Arguments
+
+<ParamField path="note_id" type="u32" required>
+  The integer ID of the note you want to delete. IDs can be found with `mono list`.
+</ParamField>
+
+## Flags / Options
+
+<ParamField path="--approve" type="boolean">
+  Confirms and executes the deletion. Without this flag the command prints a reminder message and exits without making any changes. Short: `-a`.
+</ParamField>
+
+## Examples
+
+Dry-run: see the confirmation prompt without deleting anything:
+
+```bash
+mono delete 9
+```
+
+Delete note 9 after confirming the ID is correct:
+
+```bash
+mono delete 9 --approve
+```
+
+Using the short flag:
+
+```bash
+mono delete 9 -a
+```
+
+Recommended two-step workflow — inspect first, then delete:
+
+```bash
+mono view 9
+mono delete 9 -a
+```
+
+Attempt to delete a note that does not exist:
+
+```bash
+mono delete 999 -a
+```
+
+## Output
+
+**Without `--approve`** (no changes made):
+
+```
+Please pass the '--approve' to confirm the deletion of note 9
+```
+
+**With `--approve`**, on success:
+
+```
+Deleted note with ID of 9
+```
+
+**With `--approve`**, when no note exists with that ID:
+
+```
+No note found with ID 999
+```
+
+In all cases the database is only modified when `--approve` is present and a matching note is found.

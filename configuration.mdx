@@ -1,0 +1,67 @@
+---
+title: "Configure Monochromium with config.toml"
+sidebarTitle: "Configuration"
+description: "Monochromium is configured via a TOML file at your OS config directory. Learn the available options: default_editor_command and checkin_interval_minutes."
+---
+
+Monochromium requires zero manual setup — on its very first run it automatically creates a `config.toml` file populated with sensible defaults. All configuration is stored in plain TOML, so you can inspect or change it with any text editor at any time. The config is read fresh on every invocation, so changes take effect immediately without restarting anything.
+
+## Config file location
+
+Monochromium follows the OS-standard config directory convention, resolved via `ProjectDirs::from("com", "monochromium", "monochromium")`. The exact path depends on your operating system:
+
+| OS      | Path                                                                                   |
+| ------- | -------------------------------------------------------------------------------------- |
+| macOS   | `~/Library/Application Support/com.monochromium.monochromium/config.toml`             |
+| Linux   | `~/.config/monochromium/config.toml`                                                   |
+| Windows | `C:\Users\<User>\AppData\Roaming\monochromium\monochromium\config\config.toml`         |
+
+## Configuration options
+
+<ParamField body="default_editor_command" type="string" default="nano">
+  The terminal editor launched when you edit a note without the `--headless`
+  flag. Set this to any editor command that is available in your `PATH`.
+  Common values are `nano`, `vim`, and `nvim`.
+</ParamField>
+
+<ParamField body="checkin_interval_minutes" type="integer" default="120">
+  The number of minutes that must pass since your last check-in before the
+  shell reminder hook prints a prompt. At the default of `120` you will be
+  nudged at most once every two hours. See [Reminders](/reminders) for the
+  full details on how the hook works.
+</ParamField>
+
+## Example config.toml
+
+```toml
+default_editor_command = "nano"
+checkin_interval_minutes = 120
+```
+
+## Changing settings
+
+Open `config.toml` in any text editor and save your changes — that is all. Because Monochromium reads the file on every invocation there is no daemon to reload and no cache to clear.
+
+```bash
+# nano (the default)
+nano ~/.config/monochromium/config.toml
+
+# vim
+vim ~/.config/monochromium/config.toml
+
+# neovim
+nvim ~/.config/monochromium/config.toml
+```
+
+For example, to switch to Neovim as your default editor and tighten the reminder interval to once an hour:
+
+```toml
+default_editor_command = "nvim"
+checkin_interval_minutes = 60
+```
+
+<Note>
+  If `config.toml` is missing or contains invalid TOML, Monochromium will
+  automatically recreate it with the default values the next time any `mono`
+  command is run.
+</Note>

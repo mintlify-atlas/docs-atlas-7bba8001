@@ -1,0 +1,75 @@
+{
+  "projectType": "cli-tool",
+  "projectName": "Monochromium",
+  "projectDescription": "A fast, local-first CLI note-taking app for developers that lets you capture notes, todos, and mental health check-ins directly from the terminal using a bundled SQLite database.",
+  "theme": "palm",
+  "primaryColor": "#6B5CF6",
+  "lightColor": "#EDE9FE",
+  "darkColor": "#2D1F6E",
+  "navigation": {
+    "groups": [
+      {
+        "group": "Get Started",
+        "pages": [
+          "introduction",
+          "installation",
+          "quickstart"
+        ]
+      },
+      {
+        "group": "Command Reference",
+        "pages": [
+          "commands/add",
+          "commands/checkin",
+          "commands/list",
+          "commands/todos",
+          "commands/search",
+          "commands/view",
+          "commands/edit",
+          "commands/delete",
+          "commands/export",
+          "commands/init"
+        ]
+      },
+      {
+        "group": "Configuration",
+        "pages": [
+          "configuration",
+          "reminders"
+        ]
+      },
+      {
+        "group": "Internals",
+        "pages": [
+          "data-model",
+          "contributing"
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Multiple note types: idea, todo, check-in, and other",
+    "Fully local SQLite storage — no network required",
+    "Shell reminder system via zshrc injection",
+    "Clipboard integration (--copy / --paste flags)",
+    "Filtering by type, date, and full-text search",
+    "Configurable default editor and check-in interval",
+    "Tiny, optimized release binary (LTO + size opt-level z)"
+  ],
+  "publicApiSurface": [
+    "mono add [TEXT] [--type <TYPE>] [--time <HH:MM>] [--date <YYYY-MM-DD>] [--paste] [-c]",
+    "mono checkin [TEXT] [--time <HH:MM>] [--date <YYYY-MM-DD>] [--paste] [-c]",
+    "mono list [--limit <N>] [--type <TYPE>] [--today] [--since <DATE>] [--view] [-c]",
+    "mono todos [--limit <N>] [--today] [--since <DATE>] [--view] [-c]",
+    "mono search <QUERY> [--limit <N>] [--type <TYPE>] [--date <DATE>] [-c]",
+    "mono view <ID> [--no-format] [-c]",
+    "mono edit <ID> <TEXT> [--append] [--overwrite] [--headless] [-c]",
+    "mono delete <ID> [--approve] [-c]",
+    "mono export [-c]",
+    "mono init",
+    "mono reminder",
+    "Global flag: -c / --copy (copies output to clipboard)",
+    "Config: default_editor_command (string), checkin_interval_minutes (integer)",
+    "NoteTypes enum: idea | check-in | todo | other"
+  ]
+}

@@ -1,0 +1,85 @@
+---
+title: "mono init — set up shell reminders in your terminal"
+sidebarTitle: "init"
+description: "mono init appends a mono reminder hook to your ~/.zshrc so Monochromium can prompt you to check in at a configurable interval."
+---
+
+`mono init` configures your shell environment so that Monochromium can display periodic reminders each time you open a new terminal session. It works by appending a small hook block to your `~/.zshrc` file that calls `mono reminder` on shell startup. The operation is **idempotent** — if the hook is already present, `mono init` detects it and exits without making any changes.
+
+<Note>
+  `mono init` currently supports **Zsh only** (`~/.zshrc`). Support for Bash, Fish, and other shells is not yet implemented. If you use a different shell, you can add the hook manually — see the block below.
+</Note>
+
+## Synopsis
+
+```bash
+mono init
+```
+
+## Arguments
+
+`mono init` takes no positional arguments.
+
+## Flags / Options
+
+`mono init` has no command-specific flags. The global `--copy` / `-c` flag is available but is not meaningful for this command since it produces no structured output.
+
+## What gets written to `~/.zshrc`
+
+`mono init` appends the following block to the end of your `~/.zshrc` file:
+
+```bash
+# >>> monochromium >>>
+mono reminder 2>/dev/null
+# <<< monochromium <<<
+```
+
+The delimiters (`# >>> monochromium >>>` and `# <<< monochromium <<<`) are used as idempotency markers. If `mono init` is run a second time it checks for the presence of `# >>> monochromium >>>` in the file; if found, it skips writing and returns successfully.
+
+The `2>/dev/null` suffix silences any errors from `mono reminder` (for example, if no config file is found yet) so that a broken reminder hook never prevents your shell from starting.
+
+## Reminder interval
+
+The frequency at which `mono reminder` prompts you to check in is controlled by the `checkin_interval_minutes` key in your `config.toml`. See the [reminders documentation](/reminders) for full details on configuring and customising the reminder system.
+
+## Examples
+
+Run the initializer for the first time:
+
+```bash
+mono init
+```
+
+Verify the hook was written:
+
+```bash
+grep -A2 "monochromium" ~/.zshrc
+```
+
+Re-run safely after the hook is already in place (no-op):
+
+```bash
+mono init
+```
+
+Reload your shell to activate the hook immediately without opening a new terminal:
+
+```bash
+source ~/.zshrc
+```
+
+## Output
+
+On success:
+
+```
+Successfully configured Monochromium reminders in ~/.zshrc!
+```
+
+On failure (for example, if `~/.zshrc` is not writable):
+
+```
+Failed to configure zshrc: <error details>
+```
+
+If the hook is already present, `mono init` exits silently with a zero status code — no output is printed and no changes are made to `~/.zshrc`.

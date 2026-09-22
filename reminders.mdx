@@ -1,0 +1,122 @@
+---
+title: "Shell reminders — stay on top of check-ins with mono"
+sidebarTitle: "Reminders"
+description: "Monochromium's shell reminder system prompts you to check in when a configurable interval has passed. Set it up with mono init and tune it in config.toml."
+---
+
+Monochromium includes a lightweight shell reminder system that nudges you to write a check-in note whenever a configurable amount of time has passed since your last one. A single `mono init` command wires it into your shell so that every new terminal session silently checks in on you — printing a short prompt if you are overdue, or staying completely quiet if you are on track.
+
+## How it works
+
+The reminder system is built around a hook line in `~/.zshrc` and the `mono reminder` subcommand:
+
+1. **`mono init`** appends a clearly-marked block containing `mono reminder 2>/dev/null` to `~/.zshrc`.
+2. **Every new terminal session** sources `~/.zshrc`, which runs `mono reminder` automatically.
+3. **`mono reminder`** queries the local database for the most recent note with the `CheckIn` type.
+4. If **`checkin_interval_minutes`** have elapsed since that note's timestamp, the reminder message is printed.
+5. If **no check-ins exist yet**, an introductory prompt is printed instead.
+6. If the last check-in is still **within the interval**, the command exits silently — no output at all.
+
+Errors are redirected to `/dev/null` (`2>/dev/null`), so a missing database or any other startup issue never pollutes your terminal prompt.
+
+## Setting up reminders
+
+<Steps>
+  <Step title="Run mono init">
+    From any directory, run:
+
+    ```bash
+    mono init
+    ```
+
+    On success you will see:
+
+    ```
+    Successfully configured Monochromium reminders in ~/.zshrc!
+    ```
+
+    `mono init` appends the following block to `~/.zshrc` (only once — re-running the command is safe):
+
+    ```bash
+    # >>> monochromium >>>
+    mono reminder 2>/dev/null
+    # <<< monochromium <<<
+    ```
+  </Step>
+
+  <Step title="Open a new terminal tab">
+    Open a fresh terminal tab or window so that `~/.zshrc` is sourced again. If you have no check-ins yet you should see the intro prompt immediately.
+  </Step>
+
+  <Step title="Tune the interval in config.toml">
+    Adjust how often reminders fire by editing `checkin_interval_minutes` in your [config.toml](/configuration):
+
+    ```toml
+    checkin_interval_minutes = 120
+    ```
+
+    See [Adjusting the interval](#adjusting-the-interval) below for example values.
+  </Step>
+</Steps>
+
+## What the reminder looks like
+
+There are three possible outputs when `mono reminder` runs:
+
+**No check-ins recorded yet**
+
+```
+-- monochromium --
+No check-ins yet.
+Start one with `mono checkin "text"`.
+```
+
+**The configured interval has been exceeded**
+
+```
+-- monochromium --
+It's been a while since your last check-in.
+Write one with `mono checkin "text"`.
+```
+
+**Within the interval** — the command exits silently with no output.
+
+## Adjusting the interval
+
+Edit `checkin_interval_minutes` in `config.toml` to match whatever cadence suits your workflow:
+
+```toml
+# Remind me every hour
+checkin_interval_minutes = 60
+
+# Remind me every 2 hours (default)
+checkin_interval_minutes = 120
+
+# Remind me roughly twice a day
+checkin_interval_minutes = 480
+```
+
+The new value takes effect the next time `mono reminder` runs — no restart required.
+
+<Tip>
+  If you find reminders too frequent or too sparse, start with `480` (twice a
+  day) and adjust from there. You can always check your cadence by looking at
+  recent check-ins with `mono list`.
+</Tip>
+
+## Removing reminders
+
+To stop `mono reminder` from running on shell startup, open `~/.zshrc` in your editor and delete the block that `mono init` added:
+
+```bash
+# >>> monochromium >>>
+mono reminder 2>/dev/null
+# <<< monochromium <<<
+```
+
+Save the file and open a new terminal — the reminder hook will no longer run.
+
+<Note>
+  Currently only Zsh (`~/.zshrc`) is supported. Bash and Fish shell support
+  has not yet been implemented.
+</Note>
