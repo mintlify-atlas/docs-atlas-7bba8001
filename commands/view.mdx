@@ -1,7 +1,7 @@
 ---
-title: "mono view — display a note's full content by ID"
+title: "mono view — display note content and copy to clipboard"
 sidebarTitle: "view"
-description: "mono view renders the full content of any note by its ID, formatted for the terminal. Output is automatically copied to clipboard. Key flag: --no-format."
+description: "mono view prints the full content of a note by its integer ID and always copies the output to your clipboard automatically — no flag needed."
 ---
 
 `mono view` fetches a single note from the local SQLite database by its integer ID and prints its title, ID, timestamp, and full body text to the terminal. It is the fastest way to recall the exact content of any note without scrolling through a full listing. Output is **always** copied to your clipboard automatically — no extra flag required.
@@ -21,7 +21,7 @@ mono view <NOTE_ID> [OPTIONS]
 ## Flags / Options
 
 <ParamField path="--no-format" type="boolean">
-  Outputs the note's content with no Markdown formatting applied. Short: `-n`.
+  Strips Markdown formatting from the note's output before printing. Short: `-n`.
 
   > **Note:** This flag is currently unimplemented. Passing it has no effect on output.
 </ParamField>
@@ -57,14 +57,14 @@ mono view 7
 
 Each call to `mono view` prints a single formatted note block to stdout:
 
-```
+```bash
 Meeting Notes • ID: 7 • Jan 05, 2025 at 2:30 PM
  Discussed Q1 roadmap. Action items: update spec doc, schedule follow-up for Jan 12.
 ```
 
 The line format is:
 
-```
+```bash
 TITLE • ID: N • Mon DD, YYYY at H:MM AM/PM
  CONTENT
 ```

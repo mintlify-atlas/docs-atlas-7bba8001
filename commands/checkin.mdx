@@ -1,7 +1,7 @@
 ---
 title: "mono checkin — log a wellbeing check-in from your terminal"
 sidebarTitle: "checkin"
-description: "mono checkin creates a check-in type note for mindfulness and productivity tracking. Key flags: --time, --date, --paste, --copy."
+description: "mono checkin creates a check-in type note for mindfulness and productivity tracking. Supports --time, --date, --paste, and --copy."
 ---
 
 `mono checkin` creates a note with the type permanently set to `check-in`. It is purpose-built for logging regular wellbeing or productivity snapshots — how you're feeling, what you're focused on, or anything you want to track across time. Every check-in is auto-titled using the date and time it was logged (e.g. `Check-In: Jan 15, 9:30 AM`), so your entries stay organised without any manual naming.
@@ -61,13 +61,13 @@ mono checkin "End of day wrap-up: shipped the parser fix" --copy
 
 On success, `mono checkin` prints a short confirmation message:
 
-```
+```text
 check in added successfully!
 ```
 
 The note itself is stored in the database with an auto-generated title derived from its timestamp, for example:
 
-```
+```text
 Check-In: Jan 15, 9:30 AM
 ```
 
@@ -75,6 +75,6 @@ You can view check-in entries later using `mono list --type check-in` or `mono s
 
 If no text is provided and `--paste` is not set, the command returns:
 
-```
+```text
 Please provide a message when making your note!
 ```

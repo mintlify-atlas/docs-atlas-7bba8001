@@ -1,5 +1,5 @@
 ---
-title: "mono todos — list all your todo notes"
+title: "mono todos — list and filter your todo notes quickly"
 sidebarTitle: "todos"
 description: "mono todos is a shortcut to list notes of type todo. Supports the same time and limit filters as mono list. Key flags: --limit, --today, --since, --view."
 ---
@@ -64,7 +64,7 @@ mono todos --since 2025-01-01 --copy
 
 **Without `--view`** (default): one line per todo showing the title and ID.
 
-```
+```text
 Email Alex about the Q3 retro • ID: 41
 Ship the beta by end of • ID: 39
 Fix the flaky integration test • ID: 35
@@ -72,7 +72,7 @@ Fix the flaky integration test • ID: 35
 
 **With `--view`**: each todo is expanded with its full content, timestamp, and ID.
 
-```
+```text
 Email Alex about the Q3 retro • ID: 41 • Jan 15, 2025 at 8:45 AM
  Email Alex about the Q3 retro before EOD Friday
 

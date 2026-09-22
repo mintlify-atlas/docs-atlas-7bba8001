@@ -1,10 +1,10 @@
 ---
-title: "mono delete — permanently remove a note by ID"
+title: "mono delete — remove a note from the database by ID"
 sidebarTitle: "delete"
-description: "mono delete removes a note from the SQLite database by ID. Requires --approve flag to confirm deletion and avoid accidental data loss."
+description: "mono delete removes a note permanently from your local SQLite database. You must pass --approve or -a to confirm and execute the deletion."
 ---
 
-`mono delete` permanently removes a note from your local SQLite database by its integer ID. To prevent accidental data loss, the command is a two-step process: running it without `--approve` shows a confirmation prompt; you must re-run the command with `--approve` (or `-a`) to actually carry out the deletion.
+`mono delete` permanently removes a note from your local SQLite database by its integer ID. To prevent accidental data loss, the command is a two-step process: running it without `--approve` prints a confirmation reminder; you must re-run the command with `--approve` (or `-a`) to actually carry out the deletion.
 
 <Warning>
   Deletion is **permanent**. Monochromium stores notes in a local SQLite file with no recycle bin or undo history. Once a note is deleted it cannot be recovered. Always double-check the note's content with `mono view <id>` before deleting.
@@ -65,19 +65,19 @@ mono delete 999 -a
 
 **Without `--approve`** (no changes made):
 
-```
+```bash
 Please pass the '--approve' to confirm the deletion of note 9
 ```
 
 **With `--approve`**, on success:
 
-```
+```bash
 Deleted note with ID of 9
 ```
 
 **With `--approve`**, when no note exists with that ID:
 
-```
+```bash
 No note found with ID 999
 ```
 

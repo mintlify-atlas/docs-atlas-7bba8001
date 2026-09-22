@@ -1,5 +1,5 @@
 ---
-title: "mono add — create a new note from the terminal"
+title: "mono add — create and save a new note from the CLI"
 sidebarTitle: "add"
 description: "mono add creates a note with optional type, custom timestamp, and clipboard paste support. Key flags: --type, --time, --date, --paste, --copy."
 ---
@@ -69,7 +69,7 @@ mono add "Ship the beta by end of sprint" --type todo --copy
 
 On success, `mono add` prints a single formatted line followed by the note content:
 
-```
+```text
 Rewrite the onboarding flow • ID: 42 • Jan 15, 2025 at 9:30 AM
  Rewrite the onboarding flow to be less intimidating
 ```
@@ -80,6 +80,6 @@ The title is automatically generated from the first five words of the note body.
 
 If no text is provided and `--paste` is not set, the command returns:
 
-```
+```text
 Please provide a message when making your note!
 ```

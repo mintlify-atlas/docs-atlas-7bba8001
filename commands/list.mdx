@@ -1,7 +1,7 @@
 ---
-title: "mono list — browse and filter your notes"
+title: "mono list — browse, filter, and display your notes"
 sidebarTitle: "list"
-description: "mono list displays recent notes with formatting. Filter by type, date, or use --today and --since for time-scoped views. Key flags: --limit, --type, --today, --since, --view."
+description: "mono list displays your recent notes with filtering by type and date. Use --view to expand content. Key flags: --limit, --type, --today, --since, --view."
 ---
 
 `mono list` retrieves and displays notes from your local database in reverse-chronological order. By default it returns the 15 most recent notes, showing each note's title and ID on a single line. Use filters to narrow the results by note type, date range, or today only, and add `--view` to expand each entry to include its full content.
@@ -74,7 +74,7 @@ mono list --since 2025-01-01 --copy
 
 **Without `--view`** (default): one line per note showing the title and ID.
 
-```
+```text
 Rewrite the onboarding flow • ID: 42
 Email Alex about the Q3 retro • ID: 41
 What if we stored tags as • ID: 40
@@ -83,7 +83,7 @@ Ship the beta by end of • ID: 39
 
 **With `--view`**: each note is expanded with its full content, timestamp, and ID.
 
-```
+```text
 Rewrite the onboarding flow • ID: 42 • Jan 15, 2025 at 9:30 AM
  Rewrite the onboarding flow to be less intimidating
 

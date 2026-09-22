@@ -1,7 +1,7 @@
 ---
-title: "mono export — dump all notes to terminal output"
+title: "mono export — print every stored note to the terminal"
 sidebarTitle: "export"
-description: "mono export prints every note in your database to stdout in a human-readable format. Pipe to a file or use --copy to put it on the clipboard."
+description: "mono export prints every note in your database to stdout in a human-readable format. Pipe to a file or use --copy to put it all on your clipboard."
 ---
 
 `mono export` reads every note stored in your local SQLite database and prints them all to stdout in a consistent, human-readable format. There is no limit on the number of notes returned — the full database is always dumped. Because output goes to stdout, you can redirect it to a file for a plain-text backup, pipe it into other tools such as `grep` or `wc`, or use the global `--copy` flag to put the entire export on your clipboard.
@@ -58,22 +58,20 @@ mono export | grep -c "• ID:"
 
 ## Output
 
-Each note is printed as a two-line block. Notes are separated by a blank line:
+Each note is printed as a two-line block, one immediately after the other with no blank line between them:
 
-```
+```bash
 Meeting Notes • ID: 1 • Jan 05, 2025 at 2:30 PM
  Discussed Q1 roadmap. Action items: update spec doc, schedule follow-up for Jan 12.
-
 Grocery List • ID: 2 • Jan 06, 2025 at 9:15 AM
  Eggs, milk, sourdough, coffee beans.
-
 Release Checklist • ID: 3 • Jan 07, 2025 at 4:00 PM
  1. Run full test suite. 2. Tag release. 3. Push to crates.io.
 ```
 
 The format for each note is:
 
-```
+```bash
 TITLE • ID: N • Mon DD, YYYY at H:MM AM/PM
  CONTENT
 ```
